@@ -13,7 +13,7 @@ public class Arc {
 		this.key = key;
 	}
 	
-	public void extendKey(){
+	public void extendKey(char c){
 		
 	}
 	

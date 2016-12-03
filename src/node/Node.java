@@ -4,7 +4,11 @@ import java.util.LinkedList;
 
 public abstract class Node {
 
-		protected InnerNode[] children;
+		protected LinkedList<InnerNode> children;
 		
+		public Node(){
+			
+			children = new LinkedList<InnerNode>();
+		}
 	
 }
