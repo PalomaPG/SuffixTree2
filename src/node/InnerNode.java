@@ -1,5 +1,7 @@
 package node;
 
+import java.util.LinkedList;
+
 import suffixtree.SuffixTree;
 
 public class InnerNode extends NotLeafNode {
@@ -7,7 +9,8 @@ public class InnerNode extends NotLeafNode {
 	protected SuffixLink sl;	
 	
 	public InnerNode(SuffixTree stree){
-		st = stree;	
+		st = stree;
+		position = -1;
 	}	
 	
 
@@ -27,5 +30,14 @@ public class InnerNode extends NotLeafNode {
 			return this.children.equals(n.children) && this.sl.equals(n.sl);
 		}
 	}
+
+
+	@Override
+	public int getPosition() {
+		// TODO Auto-generated method stub
+		return position;
+	}
+
+
 	
 }

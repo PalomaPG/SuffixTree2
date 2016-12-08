@@ -44,5 +44,7 @@ public class Arc {
 		return false;
 	}
 	
-	
+	public String toString(){
+		return key.toString();
+	}
 }

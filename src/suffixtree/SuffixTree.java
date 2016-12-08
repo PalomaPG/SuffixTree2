@@ -1,19 +1,20 @@
 package suffixtree;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import node.*;
 
 public class SuffixTree {
 
 	private Root root;
-	protected String text; // String del cual se sacarán los sufijos
-	protected int num = 0; // Contador para etiquetar los nodos (sólo para fines de impresión)
+	protected String text; // String del cual se sacarï¿½n los sufijos
+	protected int num = 0; // Contador para etiquetar los nodos (sï¿½lo para fines de impresiï¿½n)
 	protected NotLeafNode v;
 	protected String gamma = "";
 	protected InnerNode w;
-	//count_w = 0: w recién fue creado; count_w = 1: w fue creado en la extensión anterior, por lo tanto, se le asigna un SuffixLink
+	//count_w = 0: w reciï¿½n fue creado; count_w = 1: w fue creado en la extensiï¿½n anterior, por lo tanto, se le asigna un SuffixLink
 	protected int count_w; 	
-	protected NotLeafNode last; // Último nodo que se recorrió
+	protected NotLeafNode last; // ï¿½ltimo nodo que se recorriï¿½
 
 	public SuffixTree(){
 		root = new Root(this);	
@@ -68,11 +69,11 @@ public class SuffixTree {
 	
 	
 	public void extension(int i, int j) {			
-		//Extensión normal
+		//Extensiï¿½n normal
 		if (j == 0) {			
 			extensionByRules(i, j, root, text);					
 		}
-		//Extensión con suffix links
+		//Extensiï¿½n con suffix links
 		else {			
 			NotLeafNode ini;				
 			ini = v.getInitialNode();			
@@ -83,7 +84,7 @@ public class SuffixTree {
 				extensionByRules(i, j, ini, gamma);					
 			}
 		}		
-		// Si se siguió la regla 2.2 en la extensión anterior
+		// Si se siguiï¿½ la regla 2.2 en la extensiï¿½n anterior
 		if (w != null) {
 			if (count_w == 1) {
 				System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + last.getName());				
@@ -110,11 +111,11 @@ public class SuffixTree {
 			System.out.println("beta termina en una hoja");			
 			edge.extendKey(text.charAt(i));			
 		}
-		//// Beta era vacío. Estamos en la raíz Ó Regla 2.1 Beta termina en un nodo interno
+		//// Beta era vacï¿½o. Estamos en la raï¿½z ï¿½ Regla 2.1 Beta termina en un nodo interno
 		else if (last_pos == -1) {			
 			NotLeafNode node;			
 			if (edge == null || edge.getChild() instanceof Leaf) {
-				System.out.println("beta era vacío");					
+				System.out.println("beta era vacï¿½o");					
 				node = ini; 
 				last = ini;
 			}
@@ -154,11 +155,11 @@ public class SuffixTree {
 				// Se elimina el arco actual
 				parent.removeChild(edge);	
 				
-				// Se crea nuevo arco con el key del arco actual, pero sólo hasta donde llegó beta
+				// Se crea nuevo arco con el key del arco actual, pero sï¿½lo hasta donde llegï¿½ beta
 				Arc beta_edge = new Arc(parent, new_node, edge.getKey().substring(0, last_pos));							
 				parent.addChild(edge.getKey().charAt(0), beta_edge);				
 				
-				// Se crea nuevo arco con el key del arco actual con la parte que no se recorrió
+				// Se crea nuevo arco con el key del arco actual con la parte que no se recorriï¿½
 				Arc rest = new Arc(new_node, edge.getChild(), edge.getKey().substring(last_pos));
 				new_node.addChild(edge.getKey().charAt(last_pos), rest);		
 				
@@ -166,12 +167,12 @@ public class SuffixTree {
 				Arc new_edge = new Arc(new_node, new Leaf(j, this), text.charAt(i));
 				new_node.addChild(text.charAt(i), new_edge);
 				
-				// El nuevo nodo parte con un suffix link apuntando a la raíz
+				// El nuevo nodo parte con un suffix link apuntando a la raï¿½z
 				new_node.setSuffixLink(new SuffixLink(root));
 				
 				last = new_node;
 				
-				// Si se siguió la regla 2.2 en la extensión anterior
+				// Si se siguiï¿½ la regla 2.2 en la extensiï¿½n anterior
 				if (w != null) {
 					System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + new_node.getName());					
 					w.setSuffixLink(new SuffixLink(new_node));					
@@ -180,6 +181,91 @@ public class SuffixTree {
 				count_w = 0;				
 			}			
 		}			
+	}
+	
+	public LinkedList<Integer> search(String s, int i, LinkedList<Integer> positions){
+		
+		HashMap<Character, Arc> children_ = root.getChildren();
+		System.out.println(children_);
+		Arc arc = children_.get(s.charAt(i));
+		System.out.println(arc);
+		
+		if (arc!= null){
+			
+			String arc_s = arc.toString();
+			Node next = arc.getChild();
+			
+			if (s.equals(arc_s)){
+				
+				
+				if(next.getPosition()>-1){
+					positions.add(next.getPosition());
+					return positions;
+				}
+				else {
+					
+					next.getLeavesValues(positions);
+					return positions;
+				}
+			}
+			
+		}
+		
+		
+		
+		else System.out.println("El primer caracter no coincide con ninguno");
+		return positions;
+	}
+	
+	public static void main (String [] args){
+		
+		SuffixTree st = new SuffixTree();
+		Root root=st.getRoot();
+		Arc arc1, arc2, arc3, arc4, arc5, arc6, arc7, arc8, arc9, arc10, arc11;
+		
+		root = new Root();
+		
+		arc1= new Arc(root, new Leaf(8), "$");
+		arc2= new Arc(root, new InnerNode(st), "A");
+		arc3= new Arc(root, new Leaf(6), "CA$");
+		arc4= new Arc(root, new InnerNode(st), "GA");
+		arc5= new Arc(root, new Leaf(2), "TAGACA$");
+		
+		System.out.println(arc5);
+		root.addChild('$', arc1);
+		root.addChild('A', arc2);
+		root.addChild('C', arc3);
+		root.addChild('G', arc4);
+		root.addChild('T', arc5);
+		System.out.println(root.getChildren());
+
+		arc6 = new Arc((InnerNode)arc2.getChild(), new Leaf(7), "$");
+		arc7 = new Arc((InnerNode)arc2.getChild(), new Leaf(5), "CA$");
+		arc8 = new Arc((InnerNode)arc2.getChild(), new Leaf(3), "GACA$");
+		arc9 = new Arc((InnerNode)arc2.getChild(), new Leaf(1), "TAGACA$");
+		
+		
+		
+		((NotLeafNode)arc2.getChild()).addChild('$', arc6);
+		((NotLeafNode)arc2.getChild()).addChild('C', arc7);
+		((NotLeafNode)arc2.getChild()).addChild('G', arc8);
+		((NotLeafNode)arc2.getChild()).addChild('T', arc9);
+		System.out.println(((InnerNode)arc2.getChild()).getChildren());
+		
+		arc10 = new Arc((NotLeafNode)arc4.getChild(), new Leaf(4), "CA$");
+		arc11 = new Arc((NotLeafNode)arc4.getChild(), new Leaf(0), "TAGACA$");
+		
+		
+		((NotLeafNode)arc4.getChild()).addChild('C', arc10);
+		((NotLeafNode)arc4.getChild()).addChild('T', arc11);
+		System.out.println(((InnerNode)arc4.getChild()).getChildren());
+		st.setRoot(root);
+		
+		System.out.println(st.search("A", 0, new LinkedList<Integer>()));
+		System.out.println(st.search("GA", 0, new LinkedList<Integer>()));
+		System.out.println(st.search("$", 0, new LinkedList<Integer>()));
+		System.out.println(st.getRoot().getChildren());
+		System.out.println(root.getChildren());
 	}
 	
 }

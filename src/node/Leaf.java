@@ -1,5 +1,7 @@
 package node;
 
+import java.util.LinkedList;
+
 import suffixtree.SuffixTree;
 
 public class Leaf extends Node {
@@ -8,6 +10,10 @@ public class Leaf extends Node {
 	
 	public Leaf(){
 		position = -1;
+	}
+	
+	public Leaf(int position){
+		this.position=position;
 	}
 	
 	public Leaf(int position, SuffixTree stree){
@@ -40,6 +46,12 @@ public class Leaf extends Node {
 	@Override
 	public void print() {	
 		System.out.print("(" + position + ")");
+	}
+
+	@Override
+	public void getLeavesValues(LinkedList<Integer> positions) {
+		// TODO Auto-generated method stub
+		positions.add(position);
 	}
 	
 }
