@@ -2,9 +2,9 @@ package node;
 
 public class SuffixLink {
 		
-	protected Node node;
+	protected NotLeafNode node;
 	
-	public SuffixLink(Node n){
+	public SuffixLink(NotLeafNode n){
 		node = n;
 	}
 }
