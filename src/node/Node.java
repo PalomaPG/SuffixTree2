@@ -1,5 +1,6 @@
 package node;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import suffixtree.SuffixTree;
@@ -11,6 +12,7 @@ public abstract class Node {
 		
 		// If the node is a root, returns root. Otherwise, returns the node of its suffixlink.
 		public abstract NotLeafNode getInitialNode();	
+		public abstract HashMap<Character, Arc> getChildren();
 		
 		public abstract Object [] searchFinalArc(String beta, Arc last);
 		

@@ -183,11 +183,11 @@ public class SuffixTree {
 		}			
 	}
 	
-	public LinkedList<Integer> search(String s, int i, LinkedList<Integer> positions){
+	public LinkedList<Integer> search(String s, LinkedList<Integer> positions, Node root){
 		
 		HashMap<Character, Arc> children_ = root.getChildren();
 		System.out.println(children_);
-		Arc arc = children_.get(s.charAt(i));
+		Arc arc = children_.get(s.charAt(0));
 		System.out.println(arc);
 		
 		if (arc!= null){
@@ -207,6 +207,30 @@ public class SuffixTree {
 					next.getLeavesValues(positions);
 					return positions;
 				}
+			}
+			
+			else{
+				/*The string s is larger than the arc stored string*/
+				if(s.length()>arc.getKey().length()){
+					
+					if(s.indexOf(arc.getKey())==0){
+						String new_s = s.substring(arc.getKey().length(), s.length());
+						return search(new_s, positions, next);
+					}
+					
+					else return positions;
+				}
+				else{
+					/*The string s is shorter than the arc stored string*/
+					if(arc.getKey().toString().indexOf(s)==0){
+						next.getLeavesValues(positions);
+						return positions;
+					}
+					/*The string s is differs in at least one character*/
+					else return positions;
+				}
+				
+				
 			}
 			
 		}
@@ -261,9 +285,9 @@ public class SuffixTree {
 		System.out.println(((InnerNode)arc4.getChild()).getChildren());
 		st.setRoot(root);
 		
-		System.out.println(st.search("A", 0, new LinkedList<Integer>()));
-		System.out.println(st.search("GA", 0, new LinkedList<Integer>()));
-		System.out.println(st.search("$", 0, new LinkedList<Integer>()));
+		System.out.println(st.search("A", new LinkedList<Integer>(), root));
+		System.out.println(st.search("GA", new LinkedList<Integer>(), root));
+		System.out.println(st.search("$", new LinkedList<Integer>(), root));
 		System.out.println(st.getRoot().getChildren());
 		System.out.println(root.getChildren());
 	}

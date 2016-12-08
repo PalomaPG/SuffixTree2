@@ -1,5 +1,7 @@
 package node;
 
+import java.util.LinkedList;
+
 import suffixtree.SuffixTree;
 
 public class Main {
@@ -7,7 +9,8 @@ public class Main {
 	public static void main(String[] args) {		
 		SuffixTree st = new SuffixTree();		
 		//st = st.ukkonen("xyzxyaxyz$");    
-		st = st.ukkonen("abcabxabcd");    
+		st = st.ukkonen("abcabxabcd");
+		System.out.println(st.search("abcd", new LinkedList<Integer>(),st.getRoot()));
 	}
 
 }
