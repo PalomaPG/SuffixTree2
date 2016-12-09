@@ -15,6 +15,7 @@ public class SuffixTree {
 	//count_w = 0: w reci�n fue creado; count_w = 1: w fue creado en la extensi�n anterior, por lo tanto, se le asigna un SuffixLink
 	protected int count_w; 	
 	protected NotLeafNode last; // �ltimo nodo que se recorri�
+	protected int [] counter_by_phase;
 
 	public SuffixTree(){
 		root = new Root(this);	
@@ -40,28 +41,30 @@ public class SuffixTree {
 		root.print();
 	}
 	
-	public SuffixTree ukkonen(String s) {	
+	public SuffixTree ukkonen(String s) {
+		
+		counter_by_phase = new int [s.length()];
 		root.setName(num);
 		text = s;
 		root.addChild(s.charAt(0), new Arc(root, new Leaf(0, this), s.charAt(0)));		
-		print();
-		System.out.println();
+		//print();
+		//System.out.println();
 		for (int i = 1; i < s.length(); i ++) {
 			//fase i	
-			System.out.println();
-			System.out.println("fase " + i);			
+			//System.out.println();
+			//System.out.println("fase " + i);			
 			w = null;
 			v = root;
 			for (int j = 0; j <= i; j ++) {		
-				System.out.println();
-				System.out.println();
-				System.out.println("j = " + j);				
+				//System.out.println();
+				//System.out.println();
+				//System.out.println("j = " + j);				
 				extension(i, j);
-				System.out.println("v : " + v.getName());
-				if (w != null) System.out.println("w : " + w.getName());
-				else System.out.println("w : null");				
-				print();
-				System.out.println();
+				//System.out.println("v : " + v.getName());
+				//if (w != null) System.out.println("w : " + w.getName());
+				//else System.out.println("w : null");				
+				//print();
+				//System.out.println();
 			}			
 		}
 		return this;
@@ -77,17 +80,17 @@ public class SuffixTree {
 		else {			
 			NotLeafNode ini;				
 			ini = v.getInitialNode();			
-			System.out.println("gamma= " + gamma);			
+			//System.out.println("gamma= " + gamma);			
 			if (v instanceof Root) extensionByRules(i, j, ini, text);
 			else {								
-				System.out.println("Se recorre desde " + ini.getName() + " por " + gamma);				
+				//System.out.println("Se recorre desde " + ini.getName() + " por " + gamma);				
 				extensionByRules(i, j, ini, gamma);					
 			}
 		}		
 		// Si se sigui� la regla 2.2 en la extensi�n anterior
 		if (w != null) {
 			if (count_w == 1) {
-				System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + last.getName());				
+				//System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + last.getName());				
 				w.setSuffixLink(new SuffixLink(last));
 				w = null;
 			}
@@ -105,33 +108,33 @@ public class SuffixTree {
 		Arc edge = (Arc)found[0];	
 		int last_pos = (int)found[1];			
 		
-		System.out.println("beta : " + beta);		
+		//System.out.println("beta : " + beta);		
 		//Regla 1. Beta termina en una hoja
 		if (last_pos == -2) {	
-			System.out.println("beta termina en una hoja");			
+			//System.out.println("beta termina en una hoja");			
 			edge.extendKey(text.charAt(i));			
 		}
 		//// Beta era vac�o. Estamos en la ra�z � Regla 2.1 Beta termina en un nodo interno
 		else if (last_pos == -1) {			
 			NotLeafNode node;			
 			if (edge == null || edge.getChild() instanceof Leaf) {
-				System.out.println("beta era vac�o");					
+				//System.out.println("beta era vac�o");					
 				node = ini; 
 				last = ini;
 			}
 			else {
-				System.out.println("beta termina en un nodo interno");
+				//System.out.println("beta termina en un nodo interno");
 				node = (NotLeafNode)edge.getChild();
 				last = edge.getParent();	
 			}
 			HashMap<Character, Arc> chldrn = node.getChildren();			
 			if (chldrn.containsKey(text.charAt(i))) {
 				// Regla 3. Si existe un camino que comienza con s[i]. No se hace nada
-				System.out.println("No se hace nada");	
+				//System.out.println("No se hace nada");	
 			}
 			// Si no existe un camino que comienza con s[i], se crea un nuevo arco
 			else {
-				System.out.println("Se crea nuevo arco");
+				//System.out.println("Se crea nuevo arco");
 				Arc nuevo = new Arc(node, new Leaf(j, this), text.charAt(i));
 				node.addChild(text.charAt(i), nuevo);					
 			}					
@@ -139,13 +142,13 @@ public class SuffixTree {
 		// Regla 2.2 Beta se termina a mitad de un arco
 		else {	
 				
-			System.out.println("beta termina en mitad de un arco");			
+			//System.out.println("beta termina en mitad de un arco");			
 			if (edge.getKey().charAt(last_pos) == text.charAt(i)) {
-				System.out.println("No se hace nada");
+				//System.out.println("No se hace nada");
 				last = edge.getParent();	
 			}
 			else {
-				System.out.println("Se crea nodo interno");
+				//System.out.println("Se crea nodo interno");
 				NotLeafNode parent = edge.getParent();	
 				
 				// Se crea un nodo interno.
@@ -174,7 +177,7 @@ public class SuffixTree {
 				
 				// Si se sigui� la regla 2.2 en la extensi�n anterior
 				if (w != null) {
-					System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + new_node.getName());					
+					//System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + new_node.getName());					
 					w.setSuffixLink(new SuffixLink(new_node));					
 				}				
 				w = new_node;				
@@ -188,7 +191,7 @@ public class SuffixTree {
 		HashMap<Character, Arc> children_ = root.getChildren();
 		System.out.println(children_);
 		Arc arc = children_.get(s.charAt(0));
-		System.out.println(arc);
+		//System.out.println(arc);
 		
 		if (arc!= null){
 			
@@ -197,13 +200,11 @@ public class SuffixTree {
 			
 			if (s.equals(arc_s)){
 				
-				
 				if(next.getPosition()>-1){
 					positions.add(next.getPosition());
 					return positions;
 				}
-				else {
-					
+				else {	
 					next.getLeavesValues(positions);
 					return positions;
 				}
@@ -228,16 +229,10 @@ public class SuffixTree {
 					}
 					/*The string s is differs in at least one character*/
 					else return positions;
-				}
-				
-				
+				}		
 			}
-			
 		}
-		
-		
-		
-		else System.out.println("El primer caracter no coincide con ninguno");
+				
 		return positions;
 	}
 	
