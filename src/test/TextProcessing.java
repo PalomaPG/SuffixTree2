@@ -34,7 +34,6 @@ public class TextProcessing {
 	public static void main(String [] args){
 		
 		String curr_dir = Paths.get(".").toAbsolutePath().normalize().toString();
-		System.out.println(curr_dir);
 		String rel_path = new StringBuilder(curr_dir).append("/input/t15.txt").toString();
 		String text = readFile(rel_path);
 		

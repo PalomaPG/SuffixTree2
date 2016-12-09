@@ -3,11 +3,11 @@ package node;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import suffixtree.SuffixTree;
+import suffixtree.*;
 
 public abstract class Node {		   
 	    
-	    protected SuffixTree st;			
+	    protected AbsSuffixTree st;			
 		protected int position;	
 		
 		// If the node is a root, returns root. Otherwise, returns the node of its suffixlink.

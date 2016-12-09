@@ -1,12 +1,10 @@
 package node;
 
-import java.util.LinkedList;
-
-import suffixtree.SuffixTree;
+import suffixtree.*;
 
 public class Root extends NotLeafNode {		
 	
-	public Root(SuffixTree stree) {
+	public Root(AbsSuffixTree stree) {
 		st = stree;
 		position = -1;
 	}		

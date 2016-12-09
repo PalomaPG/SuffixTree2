@@ -3,7 +3,7 @@ package node;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import suffixtree.SuffixTree;
+import suffixtree.*;
 
 public class Leaf extends Node {
 
@@ -17,7 +17,7 @@ public class Leaf extends Node {
 		this.position=position;
 	}
 	
-	public Leaf(int position, SuffixTree stree){
+	public Leaf(int position, AbsSuffixTree stree){
 		this.position = position;
 		st = stree;
 	}
