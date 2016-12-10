@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import suffixtree.AbsSuffixTree;
-import suffixtree.SuffixTree;
 
 public abstract class Node {		   
 	    

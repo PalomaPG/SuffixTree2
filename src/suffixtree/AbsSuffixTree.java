@@ -9,17 +9,20 @@ import java.util.Map.Entry;
 import node.*;
 
 public abstract class AbsSuffixTree {
+	
+	public int fase = 0;
+	
 	protected Root root;
-	protected String text; // String del cual se sacarï¿½n los sufijos
-	protected int num = 0; // Contador para etiquetar los nodos (sï¿½lo para fines de impresiï¿½n)
+	protected String text; // String del cual se sacarán los sufijos
+	protected int num = 0; // Contador para etiquetar los nodos (sólo para fines de impresión)
 	protected NotLeafNode v;
 	protected String gamma = "";
 	protected InnerNode w;
-	//count_w = 0: w reciï¿½n fue creado; count_w = 1: w fue creado en la extensiï¿½n anterior, por lo tanto, se le asigna un SuffixLink
+	//count_w = 0: w recién fue creado; count_w = 1: w fue creado en la extensión anterior, por lo tanto, se le asigna un SuffixLink
 	protected int count_w; 	
-	protected NotLeafNode last; // ï¿½ltimo nodo que se recorriï¿½
+	protected NotLeafNode last; // Último nodo que se recorrió
 	protected int jL;
-	protected int [] counter_by_phase;
+	public int [] counter_by_phase;
 	
 	public AbsSuffixTree(){
 		root = new Root(this);	
@@ -27,23 +30,28 @@ public abstract class AbsSuffixTree {
 	
 
 	public String getText() {
+		counter_by_phase[fase]++;
 		return text;
 	}	
 	
 	
 	public Root getRoot() {
+		counter_by_phase[fase]++;
 		return root;
 	}
 
 	public void setRoot(Root root) {
+		counter_by_phase[fase]++;
 		this.root = root;
 	}
 	
 	public void setV(NotLeafNode n) {
+		counter_by_phase[fase]++;
 		v = n;
 	}
 	
 	public void setGamma(String g) {
+		counter_by_phase[fase]++;
 		gamma = g;
 	}
 	
@@ -55,55 +63,78 @@ public abstract class AbsSuffixTree {
 		root.labelPrint();
 	}
 	
-	public SuffixTree convertToReal() {
+	public AbsSuffixTree convertToReal() {
+		counter_by_phase[fase]++;
 		int end = text.length() - 1;
 		root.replaceEnd(end);
-		return null;
+		return this;
 	}
 	
-	public AbsSuffixTree ukkonen(String s) {
-		counter_by_phase = new int [s.length()];
-		root.setName(num);
-		text = s.concat("$");
+	public void resetCounter() {
+		for (int i = 0; i < counter_by_phase.length; i ++) {
+			counter_by_phase[i] = 0;
+		}
+	}
+	
+	public void printCounter() {
+		System.out.println();
+		System.out.print("[");
+		for (int i = 0; i < counter_by_phase.length - 1; i ++) {
+			System.out.print(counter_by_phase[i] + ", ");
+		}
+		System.out.println(counter_by_phase[counter_by_phase.length - 1] + "]");
+	}
+	
+	public AbsSuffixTree ukkonen(String s) {		
+		//root.setName(num);
+		
+		text = s.concat("$");	
+		counter_by_phase = new int [text.length() + 1]; // fase=text.length()-1: '$' ; fase=text.length(): convertToReal
+		resetCounter();
+		
+		counter_by_phase[fase] += 2;
+		counter_by_phase[fase] += 3; //Por el constructor de root
+		
 		root.addChild(new Arc(root, new Leaf(0, this), 0, -1));		// -1 = END
 		//labelPrint();
 		//System.out.println();
 		int finish;
-		for (int i = 1; i < text.length(); i ++) {
+		int op;
+		for (fase = 1; fase < text.length(); fase ++) {
 			//fase i	
 			//System.out.println();
-			//System.out.println("fase " + i);			
+			//System.out.println("fase " + fase);			
 			w = null;
 			v = root;
-			for (int j = 0; j <= i; j ++) {		
+			counter_by_phase[fase] += 2;
+			
+			for (int j = 0; j <= fase; j ++) {		
 				/*System.out.println();
-				System.out.println();
-				System.out.println("j = " + j);	*/			
-				finish = extension(i, j, counter_by_phase[i-1]);
+				System.out.println();*/
+				//System.out.println("j = " + j);		
+				finish = extension(fase, j);
 				/*System.out.println("v : " + v.getName());
 				if (w != null) System.out.println("w : " + w.getName());
 				else System.out.println("w : null");			
 				labelPrint();
 				System.out.println();*/
 				
-				if (finish == 1){
-					
-					break;
-				}
-			}			
+				if (finish == 1) break;
+			}
+			
 		}
 		return this;
 	}
 	
 	
-	public int extension(int i, int j, int phase_counter) {	
+	public int extension(int i, int j) {	
 		//extensionByRules(i, j, root, text);	
-		//Extensiï¿½n normal
+		//Extensión normal
 		int finish;
-		if (j == 0) {
+		if (j == 0) {			
 			finish = extensionByRules(i, j, root, text);					
 		}
-		//Extensiï¿½n con suffix links
+		//Extensión con suffix links
 		else {			
 			NotLeafNode ini;				
 			ini = v.getInitialNode();			
@@ -114,20 +145,24 @@ public abstract class AbsSuffixTree {
 				finish = extensionByRules(i, j, ini, gamma);					
 			}
 		}		
-		// Si se siguiï¿½ la regla 2.2 en la extensiï¿½n anterior
+		// Si se siguió la regla 2.2 en la extensión anterior
 		if (w != null) {
 			if (count_w == 1) {
 				//System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + last.getName());				
 				w.setSuffixLink(new SuffixLink(last));
+				
 				w = null;
+				counter_by_phase[fase]++;
 			}
-			else count_w = 1;						
+			else {
+				count_w = 1;
+				counter_by_phase[fase]++;
+			}
 		}
-		
 		return finish;
 	}
 	
-	public void printST(Node n){
+public void printST(Node n){
 		
 		if(n instanceof Leaf) return;
 		
@@ -153,6 +188,7 @@ public abstract class AbsSuffixTree {
 		}
 		
 	}
+	
 	
 	public abstract int extensionByRules(int i, int j, NotLeafNode ini, String s);
 	
