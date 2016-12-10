@@ -1,106 +1,128 @@
 package suffixtree;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import node.*;
+import node.Arc;
+import node.InnerNode;
+import node.Leaf;
+import node.Node;
+import node.NotLeafNode;
+import node.Root;
+import node.SuffixLink;
 
-public class SuffixTree extends AbsSuffixTree{
-		
-	//count_w = 0: w reciï¿½n fue creado; count_w = 1: w fue creado en la extensiï¿½n anterior, por lo tanto, se le asigna un SuffixLink
-		
+public class SuffixTree extends AbsSuffixTree {
+	
+	
+	
 	public SuffixTree(){
 		root = new Root(this);	
 	}	
 	
-	public void extensionByRules(int i, int j, NotLeafNode ini, String s) {
-		
+	
+	public int extensionByRules(int i, int j, NotLeafNode ini, String s) {		
+		// Cálculo de BETA
 		String beta;		
 		if (j >= i) beta = "";
 		else if (s.equals(text)) beta = s.substring(j, i);	
-		else beta = s;			
-		Object [] found = ini.searchFinalArc(beta, null);				
-		Arc edge = (Arc)found[0];	
-		int last_pos = (int)found[1];			
+		else beta = s;	
+		System.out.println("beta : " + beta);		
 		
-		//System.out.println("beta : " + beta);		
+		if (beta == "") {
+			last = ini;
+			if (!ini.getChildren().containsKey(text.charAt(i))) {
+				System.out.println("Se crea un nuevo arco1");
+				Arc nuevo = new Arc(ini, new Leaf(j, this), i, -1);
+				ini.addChild(nuevo);
+			}
+			else System.out.println("No se hace nada");
+			return 0;
+		}
+		
+		Object [] found = ini.searchFinalArc(i, beta, null);	
+		Arc edge = (Arc)found[0];	
+		int last_pos = (int)found[1];		
+		
 		//Regla 1. Beta termina en una hoja
 		if (last_pos == -2) {	
-			//System.out.println("beta termina en una hoja");			
-			edge.extendKey(text.charAt(i));			
+			System.out.println("beta termina en una hoja");						
 		}
-		//// Beta era vacï¿½o. Estamos en la raï¿½z ï¿½ Regla 2.1 Beta termina en un nodo interno
+		
+	    //// Estamos en la raíz Ó Regla 2.1 Beta termina en un nodo interno
 		else if (last_pos == -1) {			
 			NotLeafNode node;			
-			if (edge == null || edge.getChild() instanceof Leaf) {
-				//System.out.println("beta era vacï¿½o");					
+			if (edge == null) { //  || edge.getChild() instanceof Leaf) {
+				System.out.println("Estamos en la raíz");					
 				node = ini; 
 				last = ini;
 			}
 			else {
-				//System.out.println("beta termina en un nodo interno");
+				System.out.println("beta termina en un nodo interno");
 				node = (NotLeafNode)edge.getChild();
-				last = edge.getParent();	
+				last = edge.getParent();	//////////////////////////////////////////////////////////
 			}
 			HashMap<Character, Arc> chldrn = node.getChildren();			
 			if (chldrn.containsKey(text.charAt(i))) {
 				// Regla 3. Si existe un camino que comienza con s[i]. No se hace nada
-				//System.out.println("No se hace nada");	
+				System.out.println("No se hace nada");	
+				return 1;
 			}
 			// Si no existe un camino que comienza con s[i], se crea un nuevo arco
 			else {
-				//System.out.println("Se crea nuevo arco");
-				Arc nuevo = new Arc(node, new Leaf(j, this), text.charAt(i));
-				node.addChild(text.charAt(i), nuevo);					
+				System.out.println("Se crea nuevo arco2");
+				Arc nuevo = new Arc(node, new Leaf(j, this), i, -1);
+				node.addChild(nuevo);					
 			}					
 		}
+		
 		// Regla 2.2 Beta se termina a mitad de un arco
 		else {	
-				
-			//System.out.println("beta termina en mitad de un arco");			
-			if (edge.getKey().charAt(last_pos) == text.charAt(i)) {
-				//System.out.println("No se hace nada");
+			System.out.println("beta termina en mitad de un arco");				
+			if (text.charAt(edge.getLabel()[0] + last_pos) == text.charAt(i)) {
+		    	System.out.println("No se hace nada");
 				last = edge.getParent();	
 			}
 			else {
-				//System.out.println("Se crea nodo interno");
+				System.out.println("Se crea nodo interno");
 				NotLeafNode parent = edge.getParent();	
 				
 				// Se crea un nodo interno.
 				InnerNode new_node = new InnerNode(this);
-				//new_node.setName(++num);
+				new_node.setName(++num);
 				
 				// Se elimina el arco actual
-				parent.removeChild(edge);	
+				parent.removeChild(edge);					
 				
-				// Se crea nuevo arco con el key del arco actual, pero sï¿½lo hasta donde llegï¿½ beta
-				Arc beta_edge = new Arc(parent, new_node, edge.getKey().substring(0, last_pos));							
-				parent.addChild(edge.getKey().charAt(0), beta_edge);				
+				// Se crea nuevo arco con el key del arco actual, pero sólo hasta donde llegó beta
+				Arc beta_edge = new Arc(parent, new_node, edge.getLabel()[0], edge.getLabel()[0] + last_pos - 1);							
+				parent.addChild(beta_edge);				
 				
-				// Se crea nuevo arco con el key del arco actual con la parte que no se recorriï¿½
-				Arc rest = new Arc(new_node, edge.getChild(), edge.getKey().substring(last_pos));
-				new_node.addChild(edge.getKey().charAt(last_pos), rest);		
+				// Se crea nuevo arco con el key del arco actual con la parte que no se recorrió
+				Arc rest = new Arc(new_node, edge.getChild(), edge.getLabel()[0] + last_pos, edge.getLabel()[1]);
+				new_node.addChild(rest);		
 				
 				// Se crea otro arco, hijo del nuevo nodo interno, con la letra que se agrega en esta fase
-				Arc new_edge = new Arc(new_node, new Leaf(j, this), text.charAt(i));
-				new_node.addChild(text.charAt(i), new_edge);
+				Arc new_edge = new Arc(new_node, new Leaf(j, this), i, -1);
+				new_node.addChild(new_edge);
 				
-				// El nuevo nodo parte con un suffix link apuntando a la raï¿½z
+				// El nuevo nodo parte con un suffix link apuntando a la raíz
 				new_node.setSuffixLink(new SuffixLink(root));
 				
 				last = new_node;
 				
-				// Si se siguiï¿½ la regla 2.2 en la extensiï¿½n anterior
+				// Si se siguió la regla 2.2 en la extensión anterior
 				if (w != null) {
-					//System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + new_node.getName());					
+					System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + new_node.getName());					
 					w.setSuffixLink(new SuffixLink(new_node));					
 				}				
 				w = new_node;				
 				count_w = 0;				
-			}			
-		}			
+			}				
+		}				
+		return 0;		
 	}
 	
-	public LinkedList<Integer> search(String s, LinkedList<Integer> positions, Node root){
+public LinkedList<Integer> search(String s, LinkedList<Integer> positions, Node root){
 		
 		HashMap<Character, Arc> children_ = root.getChildren();
 		System.out.println(children_);
@@ -109,7 +131,7 @@ public class SuffixTree extends AbsSuffixTree{
 		
 		if (arc!= null){
 			
-			String arc_s = arc.toString();
+			String arc_s = arc.getKey();
 			Node next = arc.getChild();
 			
 			if (s.equals(arc_s)){
@@ -158,7 +180,7 @@ public class SuffixTree extends AbsSuffixTree{
 		
 		root = new Root();
 		
-		arc1= new Arc(root, new Leaf(8), "$");
+		/*arc1= new Arc(root, new Leaf(8), "$");
 		arc2= new Arc(root, new InnerNode(st), "A");
 		arc3= new Arc(root, new Leaf(6), "CA$");
 		arc4= new Arc(root, new InnerNode(st), "GA");
@@ -198,7 +220,10 @@ public class SuffixTree extends AbsSuffixTree{
 		System.out.println(st.search("GA", new LinkedList<Integer>(), root));
 		System.out.println(st.search("$", new LinkedList<Integer>(), root));
 		System.out.println(st.getRoot().getChildren());
-		System.out.println(root.getChildren());
+		System.out.println(root.getChildren());*/
 	}
 	
+	
 }
+
+

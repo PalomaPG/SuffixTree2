@@ -1,11 +1,14 @@
 package node;
 
-import suffixtree.*;
+import suffixtree.AbsSuffixTree;
+import suffixtree.SuffixTree;
 
 public class Root extends NotLeafNode {		
 	
-	public Root(AbsSuffixTree stree) {
-		st = stree;
+	
+	
+	public Root(AbsSuffixTree absSuffixTree) {
+		st = absSuffixTree;
 		position = -1;
 	}		
 	
@@ -15,14 +18,13 @@ public class Root extends NotLeafNode {
 	
 	public NotLeafNode getInitialNode() {
 		return this;
-	}
-
+	}	
+	
 	@Override
 	public int getPosition() {
 		// TODO Auto-generated method stub
 		return position;
 	}
-
 
 	
 	

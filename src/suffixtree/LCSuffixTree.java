@@ -15,9 +15,9 @@ public class LCSuffixTree extends AbsSuffixTree{
 	
 
 	@Override
-	public void extensionByRules(int i, int j, NotLeafNode ini, String s) {
+	public int extensionByRules(int i, int j, NotLeafNode ini, String s) {
 		// TODO Auto-generated method stub
-		
+		return 0;
 	}
 
 	@Override

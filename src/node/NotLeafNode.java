@@ -15,17 +15,30 @@ public abstract class NotLeafNode extends Node {
 	}
     
     
-	public boolean notRegistered(char c) {
-		
+    public void replaceEnd(int end) {
+    	Arc chld;
+    	for (Character start: children.keySet()) {
+    		chld = children.get(start);
+    		if (chld.getEndIndex() == -1) {
+    			chld.setEndIndex(st.getText().length() - 1);
+    		}
+    		else {
+    			((NotLeafNode)chld.getChild()).replaceEnd(end); 
+    		}					
+		}				
+	}
+    
+    public boolean notRegistered(char c) {
 		return children.get(c) == null;
 	}
     
-    public void addChild(char start, Arc edge){
-		children.put(start, edge);			
+    
+    public void addChild(Arc edge){
+		children.put(st.getText().charAt(edge.getLabel()[0]), edge);			
 	}
 	
 	public void removeChild(Arc edge) {
-		children.remove(edge.getKey().charAt(0));
+		children.remove(st.getText().charAt(edge.getLabel()[0]));
 	}
     
     public void setName(int n) {
@@ -43,64 +56,102 @@ public abstract class NotLeafNode extends Node {
     
 	
 	/* [Arc, position] 
-	 * position = -1: se terminï¿½ el recorrido en un nodo interno
-	 * position = -2: se terminï¿½ el recorrido en una hoja
-	 * position = p: se terminï¿½ el recorrido en medio del arco en la posiciï¿½n p de la llave de ese arco
+	 * position = -1: se terminó el recorrido en un nodo interno
+	 * position = -2: se terminó el recorrido en una hoja
+	 * position = p: se terminó el recorrido en medio del arco en la posición p de la llave de ese arco
 	  */	 
-	public Object [] searchFinalArc(String beta, Arc last) {
-		Object [] res = new Object[2];			
+	public Object [] searchFinalArc(int fase, String beta, Arc last) {
+		Object [] res = new Object[2];	
+		int g = beta.length();			
+		
+		// Se termina beta en un nodo interno
 		if (beta.equals("")) {
 			res[0] = last;
-			res[1] = -1;			
-			st.setGamma("");
+			res[1] = -1;
+			st.setGamma(beta);
 			return res;
-		}		
-		st.setV(this);
-		HashMap<Character, Arc> chldrn = children;		
+		}
+		
+		st.setV(this);	
 		Arc chld = null;
 		// Buscamos el arco que siga el camino de beta
+		HashMap<Character, Arc> chldrn = children;		
 		if (chldrn.containsKey(beta.charAt(0))) {
 			chld = chldrn.get(beta.charAt(0));
 		}
-		else {
+		else { 
 			res[0] = null;
 			res[1] = -3;			
 			return res;
-		}		
-		// Seguimos el camino de beta
-		for (int chr = 0; chr < chld.getKey().length(); chr ++) {
-			//Beta termina en mitad del arco
-			if (chr == beta.length()) {
-				res[0] = chld;
-				res[1] = chr;				
-				st.setGamma(beta);
-				return res;
-			}
-		}	
-		return chld.child.searchFinalArc(beta.substring(chld.key.length()), chld);		
+		}
+		
+		int gg;
+		int chld_start = chld.getLabel()[0];
+		int chld_fin = chld.getLabel()[1];
+		if (chld_fin == -1) gg = (fase - 1) - chld_start + 1;
+		else gg = chld_fin - chld_start + 1;		
+				
+		// Se pasa al nodo siguiente directamente.
+		if (gg <= g) {			
+			return chld.getChild().searchFinalArc(fase, beta.substring(gg), chld);
+		}
+		
+		// Beta termina en mitad de un arco
+		else {
+			res[0] = chld;
+			res[1] = g;
+			st.setGamma(beta);
+			return res;
+		}	 
 	}
+		
+		
+	
 	
 	
 
 	@Override
 	public abstract NotLeafNode getInitialNode();
 	
-		
+	
 	public void print() {
 		System.out.println();
 		System.out.println("Node " + name);
-		System.out.print("[ ");
+		System.out.print("( ");
 		Arc chld;
 		for (Character start: children.keySet()) {
 			chld = children.get(start);
-			System.out.print(chld.key.toString() + " ");
+			if (chld.getLabel()[1] == -1) {
+				System.out.print("[" + st.getText().substring(chld.getLabel()[0], st.getText().length()) + "] ");
+			}
+			else {
+				System.out.print("[" + st.getText().substring(chld.getLabel()[0], chld.getLabel()[1] + 1) + "] ");
+			}
 		}					
-		System.out.println("]");
+		System.out.println(")");
 		for (Character start: children.keySet()) {
 			chld = children.get(start);
 			chld.child.print();			
 		}			
 	}
+	
+		
+	public void labelPrint() {
+		System.out.println();
+		System.out.println("Node " + name);
+		System.out.print("( ");
+		Arc chld;
+		for (Character start: children.keySet()) {
+			chld = children.get(start);
+			System.out.print("[" + chld.getLabel()[0] + "," + chld.getLabel()[1] + "] ");
+		}					
+		System.out.println(")");
+		for (Character start: children.keySet()) {
+			chld = children.get(start);
+			chld.child.labelPrint();			
+		}			
+	}
+	
 	
 	@Override
 	public void getLeavesValues(LinkedList<Integer> positions) {

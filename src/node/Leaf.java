@@ -3,7 +3,8 @@ package node;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import suffixtree.*;
+import suffixtree.AbsSuffixTree;
+import suffixtree.SuffixTree;
 
 public class Leaf extends Node {
 
@@ -13,10 +14,7 @@ public class Leaf extends Node {
 		position = -1;
 	}
 	
-	public Leaf(int position){
-		this.position=position;
-	}
-	
+		
 	public Leaf(int position, AbsSuffixTree stree){
 		this.position = position;
 		st = stree;
@@ -36,11 +34,11 @@ public class Leaf extends Node {
 	}
 
 	@Override
-	public Object[] searchFinalArc(String beta, Arc last) {
+	public Object[] searchFinalArc(int fase, String beta, Arc last) {		
 		Object [] res = new Object[2];
 		res[0] = last;
 		res[1] = -2;	
-		if (last != null) st.setGamma(last.getKey());		
+		if (last != null) st.setGamma(st.getText().substring(last.getLabel()[0], fase));		
 		return res;					
 	}
 
@@ -48,14 +46,18 @@ public class Leaf extends Node {
 	public void print() {	
 		System.out.print("(" + position + ")");
 	}
-
+	
+	public void labelPrint() {
+		print();
+	}
+	
 	@Override
 	public void getLeavesValues(LinkedList<Integer> positions) {
 		// TODO Auto-generated method stub
 		positions.add(position);
 	}
-
-	public HashMap<Character, Arc> getChildren(){
+	
+	public HashMap<Character, Arc> getChildren() {
 		return null;
 	}
 	
