@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.LinkedList;
 import suffixtree.AbsSuffixTree;
 import suffixtree.SuffixTree;
@@ -40,19 +41,20 @@ public class Main {
 				       concat(text).concat(text).concat(text).concat(text).concat(text).concat(text).concat(text).concat(text).concat(text);
 		SuffixTree st = new SuffixTree();	
 		
-		String path = "C:/Users/natto/Downloads/tt15.txt";
+		String path = "input/t15.txt";
 		
 		//st = st.ukkonen("xyzxyaxyz$");    
 		//st = (SuffixTree)st.ukkonen("abcabxabcd");
 		//st = (SuffixTree)st.ukkonen(text2); 
 		
 		read(path);
-		st = (SuffixTree)st.ukkonen(great); 
+		st = (SuffixTree)st.ukkonen("abcabxabcd"); 
 		
 		st.convertToReal();
+		st.printST(st.getRoot());
 		//st.labelPrint();
-		
-		System.out.println(st.search("abcd", new LinkedList<Integer>(),st.getRoot()));	
+		System.out.println(st.search("ab", new LinkedList<Integer>(),st.getRoot(),"abcabxabcd"));
+
 		
 		System.out.println(great.length());
 		

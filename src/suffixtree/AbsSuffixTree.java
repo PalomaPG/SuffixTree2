@@ -1,18 +1,23 @@
 package suffixtree;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 
 import node.*;
 
 public abstract class AbsSuffixTree {
 	protected Root root;
-	protected String text; // String del cual se sacarán los sufijos
-	protected int num = 0; // Contador para etiquetar los nodos (sólo para fines de impresión)
+	protected String text; // String del cual se sacarï¿½n los sufijos
+	protected int num = 0; // Contador para etiquetar los nodos (sï¿½lo para fines de impresiï¿½n)
 	protected NotLeafNode v;
 	protected String gamma = "";
 	protected InnerNode w;
-	//count_w = 0: w recién fue creado; count_w = 1: w fue creado en la extensión anterior, por lo tanto, se le asigna un SuffixLink
+	//count_w = 0: w reciï¿½n fue creado; count_w = 1: w fue creado en la extensiï¿½n anterior, por lo tanto, se le asigna un SuffixLink
 	protected int count_w; 	
-	protected NotLeafNode last; // Último nodo que se recorrió
+	protected NotLeafNode last; // ï¿½ltimo nodo que se recorriï¿½
 	protected int jL;
 	protected int [] counter_by_phase;
 	
@@ -74,28 +79,31 @@ public abstract class AbsSuffixTree {
 				/*System.out.println();
 				System.out.println();
 				System.out.println("j = " + j);	*/			
-				finish = extension(i, j);
+				finish = extension(i, j, counter_by_phase[i-1]);
 				/*System.out.println("v : " + v.getName());
 				if (w != null) System.out.println("w : " + w.getName());
 				else System.out.println("w : null");			
 				labelPrint();
 				System.out.println();*/
 				
-				if (finish == 1) break;
+				if (finish == 1){
+					
+					break;
+				}
 			}			
 		}
 		return this;
 	}
 	
 	
-	public int extension(int i, int j) {	
+	public int extension(int i, int j, int phase_counter) {	
 		//extensionByRules(i, j, root, text);	
-		//Extensión normal
+		//Extensiï¿½n normal
 		int finish;
-		if (j == 0) {			
+		if (j == 0) {
 			finish = extensionByRules(i, j, root, text);					
 		}
-		//Extensión con suffix links
+		//Extensiï¿½n con suffix links
 		else {			
 			NotLeafNode ini;				
 			ini = v.getInitialNode();			
@@ -106,7 +114,7 @@ public abstract class AbsSuffixTree {
 				finish = extensionByRules(i, j, ini, gamma);					
 			}
 		}		
-		// Si se siguió la regla 2.2 en la extensión anterior
+		// Si se siguiï¿½ la regla 2.2 en la extensiï¿½n anterior
 		if (w != null) {
 			if (count_w == 1) {
 				//System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + last.getName());				
@@ -115,11 +123,38 @@ public abstract class AbsSuffixTree {
 			}
 			else count_w = 1;						
 		}
+		
 		return finish;
 	}
 	
+	public void printST(Node n){
+		
+		if(n instanceof Leaf) return;
+		
+		else{
+			HashMap<Character, Arc> children_= n.getChildren();
+			Iterator<Entry<Character, Arc>> it = children_.entrySet().iterator();
+			
+			try{
+			    PrintWriter writer = new PrintWriter("output/tree-printing.txt", "UTF-8");
+			    while(it.hasNext()){
+			    	Entry<Character, Arc> pair = it.next();
+			    	writer.print("Key character:");
+			    	writer.println(pair.getKey());
+			    	writer.println("Edge label:");
+			    	writer.println(pair.getValue().getKey());
+			    	printST(pair.getValue().getChild());
+			    	//System.out.println(pair.getValue().getKey());
+			    	}
+			    writer.close();
+				} catch (IOException e) {
+				   // do something
+				}
+		}
+		
+	}
 	
 	public abstract int extensionByRules(int i, int j, NotLeafNode ini, String s);
 	
-	public abstract LinkedList<Integer> search(String s, LinkedList<Integer> positions, Node root);
+	public abstract LinkedList<Integer> search(String s, LinkedList<Integer> positions, Node root, String text);
 }

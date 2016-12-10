@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import suffixtree.SuffixTree;
+import suffixtree.*;
 
 public class TextProcessing {
 	
@@ -63,14 +63,14 @@ public class TextProcessing {
 //		System.out.println(text.length());
 		
 		SuffixTree st = new SuffixTree();
-		String text = readFile("/Users/natto/Downloads/tt15.txt");
-//		System.out.println(text.length());
-//        TimeWatch watch = TimeWatch.start();
+		String text = readFile("input/t15.txt");
+		System.out.println(text.length());
+        TimeWatch watch = TimeWatch.start();
         st = (SuffixTree)st.ukkonen(text);
         st.convertToReal();
-//        System.out.println("Elapsed Time custom format: " + watch.toMinuteSeconds());
-//        System.out.println("Elapsed Time in seconds: " + watch.time(TimeUnit.SECONDS));
-//        System.out.println("Elapsed Time in nano seconds: " + watch.time());
+        System.out.println("Elapsed Time custom format: " + watch.toMinuteSeconds());
+        System.out.println("Elapsed Time in seconds: " + watch.time(TimeUnit.SECONDS));
+        System.out.println("Elapsed Time in nano seconds: " + watch.time());
 
 		    
 

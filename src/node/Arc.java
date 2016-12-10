@@ -16,14 +16,14 @@ public class Arc {
 	 * @param p
 	 * @param c
 	 * @param start
-	 * @param fin
+	 * @param end
 	 */
-	public Arc(NotLeafNode p, Node c, int start, int fin){		
+	public Arc(NotLeafNode p, Node c, int start, int end){		
 			parent = p;
 			child = c;
 			label = new int[2];
 			label[0] = start;
-			label[1] = fin;		
+			label[1] = end;		
 	}
 	
 	public Node getChild() {
@@ -35,17 +35,14 @@ public class Arc {
 	}
 	
 	public String getKey() {
-		return child.st.getText().substring(label[0], label[1] + 1);
+		return child.st.getText().substring(label[0], label[1]);
 	}
 	
 	/*public void extendKey(char c){
 		key.append(c);
 	}*/
 	
-	public boolean notInList(LinkedList<Arc> children) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 	
 	public int [] getLabel() {
 		return label;

@@ -21,7 +21,7 @@ public class LCSuffixTree extends AbsSuffixTree{
 	}
 
 	@Override
-	public LinkedList<Integer> search(String s, LinkedList<Integer> positions, Node root) {
+	public LinkedList<Integer> search(String s, LinkedList<Integer> positions, Node root, String text) {
 		// TODO Auto-generated method stub
 		return null;
 	}
