@@ -1,15 +1,16 @@
 package test;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.nio.file.Paths;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
-import suffixtree.*;
+import suffixtree.SuffixTree;
 
 public class TextProcessing {
-
 	
-	public static String readFile(String filename)
+	static String a = "abcdefghijklmnopqrstuvwxyz";
+	
+	private static String readFile(String filename)
 	{
 	  StringBuilder records = new StringBuilder();
 	  try
@@ -31,14 +32,48 @@ public class TextProcessing {
 	  }
 	}
 	
-	public static void main(String [] args){
+	static public StringBuilder clean(String initialText){
+		StringBuilder cleanText = new StringBuilder();
+		initialText = initialText.toLowerCase();
+		for (int i=0; i<initialText.length(); i++){
+			if (a.contains("" + initialText.charAt(i))){
+				cleanText.append(initialText.charAt(i));
+			}
+		}
+		return cleanText;
+	}
+	
+	public static void main (String [] args) throws IOException{
 		
-		String curr_dir = Paths.get(".").toAbsolutePath().normalize().toString();
-		String rel_path = new StringBuilder(curr_dir).append("/input/t15.txt").toString();
-		String text = readFile(rel_path);
+
+		
+//		String text = clean(readFile("/Users/paolapintosilva/Documents/workspace/T2/src/tests/t15.txt")).toString();
+//		System.out.println(text.length());
+//		
+//		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+//	              new FileOutputStream("/Users/paolapintosilva/Documents/workspace/T2/src/tests/pequeño.txt"), "utf-8"))) {
+//			writer.write(text);
+//			
+//			
+//	}
+//		
+//		System.out.println(readFile("/Users/paolapintosilva/Documents/workspace/T2/src/tests/tt15.txt").length());
+
+//		String text = "theprotheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookofjectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookoftheprojectgutenbergebookof";
+//		System.out.println(text.length());
 		
 		SuffixTree st = new SuffixTree();
-		st.ukkonen(text);
+		String text = readFile("/Users/paolapintosilva/Documents/workspace/T2/src/tests/tt15.txt");
+//		System.out.println(text.length());
+//        TimeWatch watch = TimeWatch.start();
+        st = (SuffixTree)st.ukkonen(text);
+        st.convertToReal();
+//        System.out.println("Elapsed Time custom format: " + watch.toMinuteSeconds());
+//        System.out.println("Elapsed Time in seconds: " + watch.time(TimeUnit.SECONDS));
+//        System.out.println("Elapsed Time in nano seconds: " + watch.time());
+
+		    
+
 		
 	}
 }
