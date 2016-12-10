@@ -63,7 +63,7 @@ public class TextProcessing {
 //		System.out.println(text.length());
 		
 		SuffixTree st = new SuffixTree();
-		String text = readFile("/Users/paolapintosilva/Documents/workspace/T2/src/tests/tt15.txt");
+		String text = readFile("/Users/natto/Downloads/tt15.txt");
 //		System.out.println(text.length());
 //        TimeWatch watch = TimeWatch.start();
         st = (SuffixTree)st.ukkonen(text);

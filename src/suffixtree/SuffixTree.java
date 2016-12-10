@@ -26,16 +26,16 @@ public class SuffixTree extends AbsSuffixTree {
 		if (j >= i) beta = "";
 		else if (s.equals(text)) beta = s.substring(j, i);	
 		else beta = s;	
-		System.out.println("beta : " + beta);		
+		//System.out.println("beta : " + beta);		
 		
 		if (beta == "") {
 			last = ini;
 			if (!ini.getChildren().containsKey(text.charAt(i))) {
-				System.out.println("Se crea un nuevo arco1");
+				//System.out.println("Se crea un nuevo arco1");
 				Arc nuevo = new Arc(ini, new Leaf(j, this), i, -1);
 				ini.addChild(nuevo);
 			}
-			else System.out.println("No se hace nada");
+			else //System.out.println("No se hace nada");
 			return 0;
 		}
 		
@@ -45,31 +45,31 @@ public class SuffixTree extends AbsSuffixTree {
 		
 		//Regla 1. Beta termina en una hoja
 		if (last_pos == -2) {	
-			System.out.println("beta termina en una hoja");						
+			//System.out.println("beta termina en una hoja");						
 		}
 		
 	    //// Estamos en la raíz Ó Regla 2.1 Beta termina en un nodo interno
-		else if (last_pos == -1) {			
+		else if (edge == null || last_pos == -1) {			
 			NotLeafNode node;			
 			if (edge == null) { //  || edge.getChild() instanceof Leaf) {
-				System.out.println("Estamos en la raíz");					
+				//System.out.println("Estamos en la raíz");					
 				node = ini; 
 				last = ini;
 			}
 			else {
-				System.out.println("beta termina en un nodo interno");
+				//System.out.println("beta termina en un nodo interno");
 				node = (NotLeafNode)edge.getChild();
 				last = edge.getParent();	//////////////////////////////////////////////////////////
 			}
 			HashMap<Character, Arc> chldrn = node.getChildren();			
 			if (chldrn.containsKey(text.charAt(i))) {
 				// Regla 3. Si existe un camino que comienza con s[i]. No se hace nada
-				System.out.println("No se hace nada");	
+				//System.out.println("No se hace nada");	
 				return 1;
 			}
 			// Si no existe un camino que comienza con s[i], se crea un nuevo arco
 			else {
-				System.out.println("Se crea nuevo arco2");
+				//System.out.println("Se crea nuevo arco2");
 				Arc nuevo = new Arc(node, new Leaf(j, this), i, -1);
 				node.addChild(nuevo);					
 			}					
@@ -77,13 +77,14 @@ public class SuffixTree extends AbsSuffixTree {
 		
 		// Regla 2.2 Beta se termina a mitad de un arco
 		else {	
-			System.out.println("beta termina en mitad de un arco");				
+			//if (edge == null) System.out.println("EDGE IS NULL");
+			//System.out.println("beta termina en mitad de un arco");				
 			if (text.charAt(edge.getLabel()[0] + last_pos) == text.charAt(i)) {
-		    	System.out.println("No se hace nada");
+		    	//System.out.println("No se hace nada");
 				last = edge.getParent();	
 			}
 			else {
-				System.out.println("Se crea nodo interno");
+				//System.out.println("Se crea nodo interno");
 				NotLeafNode parent = edge.getParent();	
 				
 				// Se crea un nodo interno.
@@ -112,7 +113,7 @@ public class SuffixTree extends AbsSuffixTree {
 				
 				// Si se siguió la regla 2.2 en la extensión anterior
 				if (w != null) {
-					System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + new_node.getName());					
+					//System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + new_node.getName());					
 					w.setSuffixLink(new SuffixLink(new_node));					
 				}				
 				w = new_node;				
@@ -125,7 +126,7 @@ public class SuffixTree extends AbsSuffixTree {
 public LinkedList<Integer> search(String s, LinkedList<Integer> positions, Node root){
 		
 		HashMap<Character, Arc> children_ = root.getChildren();
-		System.out.println(children_);
+		//System.out.println(children_);
 		Arc arc = children_.get(s.charAt(0));
 		//System.out.println(arc);
 		

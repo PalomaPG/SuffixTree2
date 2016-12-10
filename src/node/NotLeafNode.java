@@ -80,6 +80,7 @@ public abstract class NotLeafNode extends Node {
 			chld = chldrn.get(beta.charAt(0));
 		}
 		else { 
+			
 			res[0] = null;
 			res[1] = -3;			
 			return res;

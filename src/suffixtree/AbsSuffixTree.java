@@ -61,25 +61,25 @@ public abstract class AbsSuffixTree {
 		root.setName(num);
 		text = s.concat("$");
 		root.addChild(new Arc(root, new Leaf(0, this), 0, -1));		// -1 = END
-		labelPrint();
-		System.out.println();
+		//labelPrint();
+		//System.out.println();
 		int finish;
 		for (int i = 1; i < text.length(); i ++) {
 			//fase i	
-			System.out.println();
-			System.out.println("fase " + i);			
+			//System.out.println();
+			//System.out.println("fase " + i);			
 			w = null;
 			v = root;
 			for (int j = 0; j <= i; j ++) {		
+				/*System.out.println();
 				System.out.println();
-				System.out.println();
-				System.out.println("j = " + j);				
+				System.out.println("j = " + j);	*/			
 				finish = extension(i, j);
-				System.out.println("v : " + v.getName());
+				/*System.out.println("v : " + v.getName());
 				if (w != null) System.out.println("w : " + w.getName());
-				else System.out.println("w : null");				
-				//labelPrint();
-				System.out.println();
+				else System.out.println("w : null");			
+				labelPrint();
+				System.out.println();*/
 				
 				if (finish == 1) break;
 			}			
@@ -99,17 +99,17 @@ public abstract class AbsSuffixTree {
 		else {			
 			NotLeafNode ini;				
 			ini = v.getInitialNode();			
-			System.out.println("gamma= " + gamma);			
+			//System.out.println("gamma= " + gamma);			
 			if (v instanceof Root) finish = extensionByRules(i, j, ini, text);
 			else {								
-				System.out.println("Se recorre desde " + ini.getName() + " por " + gamma);				
+				//System.out.println("Se recorre desde " + ini.getName() + " por " + gamma);				
 				finish = extensionByRules(i, j, ini, gamma);					
 			}
 		}		
 		// Si se siguió la regla 2.2 en la extensión anterior
 		if (w != null) {
 			if (count_w == 1) {
-				System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + last.getName());				
+				//System.out.println("Se crea SuffixLink entre " + w.getName() + " y " + last.getName());				
 				w.setSuffixLink(new SuffixLink(last));
 				w = null;
 			}
