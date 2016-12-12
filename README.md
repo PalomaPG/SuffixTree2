@@ -1,2 +1,2 @@
 # SuffixTree2
-An alternative linear (?) version to SuffixTree
+A linear (?) alternative version to SuffixTree
