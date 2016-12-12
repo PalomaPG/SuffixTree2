@@ -1,0 +1,18 @@
+Key character:a
+Edge label:
+a
+Key character:b
+Edge label:
+
+Key character:c
+Edge label:
+
+Key character:d
+Edge label:
+d
+Key character:$
+Edge label:
+
+Key character:x
+Edge label:
+xabcd
